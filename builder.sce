@@ -19,7 +19,11 @@ catch
 	error(gettext("Scilab 5.2 or more is required."));
 end
 
-if v(2) < 2 then
+// Scilab 2027 returns v = [2027 0 0 ...]: this guard used to read the MINOR
+// version alone, so 0 < 2 rejected a Scilab 400 majors NEWER than the 5.2 it
+// asks for. Compare the major first, and only fall back to the minor within
+// the 5.x line the check was written for.
+if v(1) < 5 | (v(1) == 5 & v(2) < 2) then
 	// new API in scilab 5.2
 	error(gettext('Scilab 5.2 or more is required.'));  
 end
@@ -28,7 +32,7 @@ end
 // =============================================================================
 
 if ~with_module('development_tools') then
-  error(msprintf(gettext('%s module not installed."),'development_tools'));
+  error(msprintf(gettext('%s module not installed.'),'development_tools'));
 end
 
 // Action
